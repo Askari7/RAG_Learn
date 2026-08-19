@@ -6,7 +6,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 def create_vector_store():
     embeddings = GoogleGenerativeAIEmbeddings(
-        model="gemini-embedding-2"
+        model="gemini-embedding-2-preview"
     )
 
     index_path = "vector_store/index.faiss"
@@ -34,7 +34,7 @@ def create_vector_store():
 
     retriever = vector_store.as_retriever(
         search_type="similarity",
-        search_kwargs={"k": 3}
+        search_kwargs={"k": 2}
     )
 
     return vector_store, retriever

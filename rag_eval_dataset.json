@@ -1,0 +1,242 @@
+[
+  {
+    "user_input": "What is the objective of the Attendance Policy?",
+    "reference": "The objective is to give employees provision to balance their personal as well as professional life.",
+    "policy": "Attendance Policy",
+    "category": "objective"
+  },
+  {
+    "user_input": "Who is eligible under the Attendance Policy?",
+    "reference": "The Attendance Policy applies to all regular employees, including Professional Staff and Labor Staff.",
+    "policy": "Attendance Policy",
+    "category": "eligibility"
+  },
+  {
+    "user_input": "What are the office hours from Monday to Thursday?",
+    "reference": "Monday to Thursday office hours are 09:00 am to 06:00 pm, with lunch and prayers from 1:00 pm to 2:00 pm.",
+    "policy": "Attendance Policy",
+    "category": "working_hours"
+  },
+  {
+    "user_input": "What are the office hours on Friday?",
+    "reference": "Friday office hours are 09:00 am to 06:00 pm, with lunch and prayers from 1:00 pm to 2:30 pm.",
+    "policy": "Attendance Policy",
+    "category": "working_hours"
+  },
+  {
+    "user_input": "What are the Saturday working hours for the Operations Department?",
+    "reference": "Saturday working hours for the Operations Department are 10:00 am to 5:00 pm, with lunch and prayers from 1:00 pm to 2:00 pm.",
+    "policy": "Attendance Policy",
+    "category": "working_hours"
+  },
+  {
+    "user_input": "How many WFH days are employees allowed per month according to the Attendance Policy?",
+    "reference": "Employees are allowed to work remotely for 4 days per month upon manager approval.",
+    "policy": "Attendance Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "Can unused WFH days be carried over?",
+    "reference": "Unused WFH days cannot be carried over to the next month or year.",
+    "policy": "Attendance Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "How much grace time is allowed for late arrival?",
+    "reference": "Official working hours start at 09:00 hours, with a grace period of 30 minutes until 09:30 hours.",
+    "policy": "Attendance Policy",
+    "category": "late_arrival"
+  },
+  {
+    "user_input": "What happens after more than three late arrivals?",
+    "reference": "More than 3 late arrivals are considered as one LWOP with a written warning, subject to the authority of the COO, CEO, CIO and HR.",
+    "policy": "Attendance Policy",
+    "category": "late_arrival"
+  },
+  {
+    "user_input": "When should an employee inform the supervisor and HR about WFH?",
+    "reference": "For WFH, the employee needs to inform the supervisor and HR one day before the meeting or WFH plan via ESS.",
+    "policy": "Attendance Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "What is the purpose of the Leave Policy?",
+    "reference": "The purpose is to provide guidelines regarding when to avail leave and the process for taking leave with pay, leave without pay, and leave of absence.",
+    "policy": "Leave Policy",
+    "category": "purpose"
+  },
+  {
+    "user_input": "Who is eligible under the Leave Policy?",
+    "reference": "The Leave Policy applies to all regular employees of the company.",
+    "policy": "Leave Policy",
+    "category": "eligibility"
+  },
+  {
+    "user_input": "What software is used to maintain leave records?",
+    "reference": "All leave records of employees are maintained in MiHCM software.",
+    "policy": "Leave Policy",
+    "category": "process"
+  },
+  {
+    "user_input": "What should an employee do if emergency leave cannot be applied for in advance?",
+    "reference": "The employee should give telephonic or text intimation to the immediate manager or HR department.",
+    "policy": "Leave Policy",
+    "category": "process"
+  },
+  {
+    "user_input": "Can leave be claimed as a matter of right?",
+    "reference": "No. Leave cannot be claimed as a matter of right and may be granted or refused depending upon business demands.",
+    "policy": "Leave Policy",
+    "category": "general"
+  },
+  {
+    "user_input": "What is the leave calendar year?",
+    "reference": "The leave calendar year is from July to June.",
+    "policy": "Leave Policy",
+    "category": "leave_year"
+  },
+  {
+    "user_input": "When do employees become eligible for sick and casual leave?",
+    "reference": "Employees become eligible for Sick and Casual Leave after completion of the probationary period.",
+    "policy": "Leave Policy",
+    "category": "eligibility"
+  },
+  {
+    "user_input": "When are employees eligible for annual leave?",
+    "reference": "Employees are eligible for Annual Leave after one year of service.",
+    "policy": "Leave Policy",
+    "category": "eligibility"
+  },
+  {
+    "user_input": "Who must approve leave before an employee proceeds on leave?",
+    "reference": "The Head of Department, Reporting Manager, and Human Resources Department must approve the leave before the employee proceeds on leave.",
+    "policy": "Leave Policy",
+    "category": "approval"
+  },
+  {
+    "user_input": "What happens if an employee takes leave without approval?",
+    "reference": "Leave without approval is considered leave without pay, and absence without proper approval may lead to disciplinary action.",
+    "policy": "Leave Policy",
+    "category": "unauthorized_leave"
+  },
+  {
+    "user_input": "How many sick leave days are employees entitled to?",
+    "reference": "Employees are entitled to 8 days of sick leave.",
+    "policy": "Leave Policy",
+    "category": "sick_leave"
+  },
+  {
+    "user_input": "Is sick leave paid?",
+    "reference": "Yes. Sick leave is paid leave.",
+    "policy": "Leave Policy",
+    "category": "sick_leave"
+  },
+  {
+    "user_input": "What is the maximum number of casual leave days that can be taken at one time?",
+    "reference": "A maximum of 2 casual leave days can be availed at one time.",
+    "policy": "Leave Policy",
+    "category": "casual_leave"
+  },
+  {
+    "user_input": "What happens if casual leave is taken from Friday to Monday?",
+    "reference": "Leave taken from Friday to Monday is treated as sandwich leave and is deducted from casual leave. If casual leave is unavailable, salary is deducted accordingly.",
+    "policy": "Leave Policy",
+    "category": "casual_leave"
+  },
+  {
+    "user_input": "How long is maternity leave?",
+    "reference": "Confirmed female employees are entitled to maternity leave with full pay for 90 continuous days, excluding national holidays, for each pregnancy.",
+    "policy": "Leave Policy",
+    "category": "maternity_leave"
+  },
+  {
+    "user_input": "When are employees eligible for maternity leave?",
+    "reference": "Employees are entitled to maternity leave upon completion of probation.",
+    "policy": "Leave Policy",
+    "category": "maternity_leave"
+  },
+  {
+    "user_input": "How many paternity leave days can an employee take?",
+    "reference": "A maximum of 3 days of paternity leave can be availed.",
+    "policy": "Leave Policy",
+    "category": "paternity_leave"
+  },
+  {
+    "user_input": "When must paternity leave be taken?",
+    "reference": "Paternity leave must be taken within 10 days of childbirth; otherwise the leave will lapse.",
+    "policy": "Leave Policy",
+    "category": "paternity_leave"
+  },
+  {
+    "user_input": "How many pilgrimage leave days are available?",
+    "reference": "An employee who has completed one year of continuous service is entitled to 14 days of pilgrimage leave.",
+    "policy": "Leave Policy",
+    "category": "pilgrimage_leave"
+  },
+  {
+    "user_input": "How often can pilgrimage leave be availed?",
+    "reference": "Pilgrimage leave can be availed once during two years of service.",
+    "policy": "Leave Policy",
+    "category": "pilgrimage_leave"
+  },
+  {
+    "user_input": "Who is eligible for the Work From Home Policy?",
+    "reference": "Professional employees who have completed 3 months of employment, whose roles can be effectively managed remotely, and who have a track record of meeting performance goals and deadlines are eligible.",
+    "policy": "Work From Home Policy",
+    "category": "eligibility"
+  },
+  {
+    "user_input": "How many WFH days are allowed per year?",
+    "reference": "Employees are allowed to work remotely for 48 days per year, equivalent to 4 days per month, subject to manager approval.",
+    "policy": "Work From Home Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "Can additional WFH days be approved?",
+    "reference": "Additional WFH days may require special written approval from management, including the COO, CEO, or CIO.",
+    "policy": "Work From Home Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "How far in advance must a WFH request be submitted?",
+    "reference": "All WFH requests must be submitted at least 1 day in advance using the designated company portal.",
+    "policy": "Work From Home Policy",
+    "category": "wfh_process"
+  },
+  {
+    "user_input": "On which days can WFH be availed?",
+    "reference": "WFH can be availed on any working day except Monday and Friday.",
+    "policy": "Work From Home Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "Can unused WFH days be carried forward?",
+    "reference": "Unused WFH days cannot be carried over to the next month or year.",
+    "policy": "Work From Home Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "What security requirements apply when working from home?",
+    "reference": "Employees must use a secure internet connection, comply with company cybersecurity protocols, access sensitive company data only through VPN or approved security platforms, and keep software and devices updated.",
+    "policy": "Work From Home Policy",
+    "category": "security"
+  },
+  {
+    "user_input": "What are employees expected to do during WFH working hours?",
+    "reference": "Employees are expected to maintain full availability during regular working hours and remain responsive through company communication channels such as email, Slack, and phone.",
+    "policy": "Work From Home Policy",
+    "category": "availability"
+  },
+  {
+    "user_input": "Can WFH privileges be revoked?",
+    "reference": "Yes. WFH privileges may be revoked at management's discretion if performance issues arise.",
+    "policy": "Work From Home Policy",
+    "category": "wfh"
+  },
+  {
+    "user_input": "Can an employee work remotely from outside the country?",
+    "reference": "Working remotely from outside the country may require additional approval because of tax, visa, and legal considerations, and employees must comply with local labor laws.",
+    "policy": "Work From Home Policy",
+    "category": "legal"
+  }
+]

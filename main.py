@@ -17,10 +17,9 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
 def llm_node(state: MessagesState):
     question = state["question"]    
     results = retriever.invoke(question)
-    state["documents"] = results
-    context = "\n\n".join(d.page_content for d in state["documents"])
+    context = "\n\n".join(d.page_content for d in results)
     llm_response = llm.invoke(f"Context:\n{context}\n\nQuestion: {question}")
-    return {"answer": llm_response}
+    return {"answer": llm_response.content, "documents": results}
 
 graph = StateGraph(MessagesState)
 graph.add_node("llm_node", llm_node)
@@ -29,5 +28,5 @@ graph.add_edge("llm_node", END)
 
 compiled_graph = graph.compile()
 
-response = compiled_graph.invoke({"question": "What is the main topic of the documents?"})
+response = compiled_graph.invoke({"question": "Briefly, explain consequences of leave?"})
 print("Answer:", response["answer"])
