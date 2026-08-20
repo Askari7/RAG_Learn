@@ -9,6 +9,6 @@ wheels/
 # Virtual environments
 .venv
 .env
-
+venv/
 RAG_EVALUATION_LOG.md
 RAG_EVALUATION_LOG_40Q.md
