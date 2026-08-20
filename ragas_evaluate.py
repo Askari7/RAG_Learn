@@ -14,6 +14,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from ragas import evaluate
 from ragas.embeddings import LangchainEmbeddingsWrapper
 from ragas.llms import LangchainLLMWrapper
+from ragas.run_config import RunConfig
 from ragas.metrics import (
     faithfulness,
     answer_relevancy,
@@ -65,6 +66,7 @@ evaluation = evaluate(
     ],
     llm=ragas_llm,
     embeddings=ragas_embeddings,
+    run_config=RunConfig(max_workers=4, timeout=300),
 )
 
 print("\n===== RAG EVALUATION =====")
