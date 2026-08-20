@@ -13,7 +13,7 @@ class MessagesState(TypedDict):
 
 vector_store, retriever = create_vector_store()
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, thinking_budget=0)
 
 def llm_node(state: MessagesState):
     question = state["question"]    
@@ -33,6 +33,3 @@ graph.add_edge(START, "llm_node")
 graph.add_edge("llm_node", END)
 
 compiled_graph = graph.compile()
-
-response = compiled_graph.invoke({"question": "Briefly, explain consequences of leave?"})
-print("Answer:", response["answer"])
