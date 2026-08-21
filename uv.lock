@@ -113,20 +113,6 @@ wheels = [
 ]
 
 [[package]]
-name = "alembic"
-version = "1.19.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "mako" },
-    { name = "sqlalchemy" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/16/2b/e4153978368de59918115c9e01d3ebf58a558a7285efa7e960c383c4b59a/alembic-1.19.1.tar.gz", hash = "sha256:e0fca0518118c78acc493e31bcb5402f190057aaf6df8b5b95ce94c4789cf648", size = 2070816, upload-time = "2026-08-08T16:32:01.565Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/20/89/e62cc37b69ad357cc8ecd6e7367f5245f523d3cbb338a66197212bdf6749/alembic-1.19.1-py3-none-any.whl", hash = "sha256:b39018cb3d9413a19cbd54cf3c02ad33998641f0538eb77413a488a21c3e14be", size = 265946, upload-time = "2026-08-08T16:32:03.153Z" },
-]
-
-[[package]]
 name = "altair"
 version = "6.2.2"
 source = { registry = "https://pypi.org/simple" }
@@ -398,19 +384,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/64/a2/4615c8f7d81a00b1d6e6afe19f694e1543582349fb5f4076f6cb5dc36485/cryptography-50.0.0-cp39-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:c87f62a3d3b9888ed0fdde100ec06aa61ca9cd44bad9057d1dff9a516b5f5bb9", size = 4878208, upload-time = "2026-07-31T14:24:45.522Z" },
     { url = "https://files.pythonhosted.org/packages/d2/1a/efcfb02f91407149a0dacffffab791f7e19bf6385f63b3666dc8b5e5c9c8/cryptography-50.0.0-cp39-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:65c2c3add92b45fd0709db8594536aea39c2a67af0e27ffcf049c498501140b7", size = 5037050, upload-time = "2026-07-31T14:24:47.697Z" },
     { url = "https://files.pythonhosted.org/packages/57/30/4a22984d4f1bdfb8c054f07a92bc176b97a3134cc1d6c4b3bffb1f3688b4/cryptography-50.0.0-cp39-abi3-win_amd64.whl", hash = "sha256:d24fead1d4d076e1bfb006dcec392074a3cd8d7b4fc8a595aa64073b2b7a96ba", size = 3874135, upload-time = "2026-07-31T14:24:50.085Z" },
-]
-
-[[package]]
-name = "dataset"
-version = "2.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "alembic" },
-    { name = "sqlalchemy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/10/0113e396ac92652cfab96663e2a98eb8ddf33766c24c586d79d3ea87eaa3/dataset-2.0.0.tar.gz", hash = "sha256:0e13d309dfbaafb3e67b991605ce6767867262908864455505c415442c0bba45", size = 183331, upload-time = "2026-04-12T09:59:37.862Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/22/2a12be390bb1bc92e6930a9180f27a4cba002cb09fad9b68b03ca345e94f/dataset-2.0.0-py3-none-any.whl", hash = "sha256:c08354c068002c2beb7811b37b8abf434e1fc333898f8cfc2be32df3f14099b3", size = 21126, upload-time = "2026-04-12T09:59:36.741Z" },
 ]
 
 [[package]]
@@ -1196,18 +1169,6 @@ wheels = [
 ]
 
 [[package]]
-name = "mako"
-version = "1.4.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "markupsafe" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2a/12/b5fa2353e2754cd67fb9f83793fa48ff42c213a5da7e719869d2301f6ab8/mako-1.4.1.tar.gz", hash = "sha256:d7904710b662996425a21627710c4777c45053146942cf8a7aebf757c92b8c27", size = 410165, upload-time = "2026-08-05T06:10:56.611Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/54/12ed58d458474aaab5c3d180173e745a4fe131bb330370596876d19ff60f/mako-1.4.1-py3-none-any.whl", hash = "sha256:a359d9a94a541213958742b2698d0a7757bb83551767bc468a74b9905aba9617", size = 80010, upload-time = "2026-08-05T06:10:58.248Z" },
-]
-
-[[package]]
 name = "markdown-it-py"
 version = "4.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1559,18 +1520,19 @@ name = "p3"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "dataset" },
-    { name = "datasets" },
     { name = "dotenv" },
     { name = "faiss-cpu" },
     { name = "fastapi" },
-    { name = "langchain" },
     { name = "langchain-community" },
     { name = "langchain-core" },
     { name = "langchain-google-genai" },
-    { name = "langchain-openai" },
     { name = "langgraph" },
     { name = "pypdf" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "datasets" },
     { name = "ragas" },
     { name = "streamlit" },
     { name = "uvicorn", extra = ["standard"] },
@@ -1578,18 +1540,19 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dataset", specifier = ">=2.0.0" },
-    { name = "datasets", specifier = ">=5.0.1" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "faiss-cpu", specifier = ">=1.15.0" },
     { name = "fastapi", specifier = ">=0.141.1" },
-    { name = "langchain", specifier = ">=1.3.14" },
     { name = "langchain-community", specifier = ">=0.4.2" },
     { name = "langchain-core", specifier = ">=1.5.3" },
     { name = "langchain-google-genai", specifier = ">=4.3.3" },
-    { name = "langchain-openai", specifier = ">=1.4.3" },
     { name = "langgraph", specifier = ">=1.2.10" },
     { name = "pypdf", specifier = ">=6.15.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "datasets", specifier = ">=5.0.1" },
     { name = "ragas", specifier = ">=0.4.3" },
     { name = "streamlit", specifier = ">=1.61.1" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.52.1" },
