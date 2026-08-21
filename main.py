@@ -2,7 +2,6 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from typing import List, TypedDict
 from langchain_core.documents  import Document
 from langgraph.graph import StateGraph, START, END
-from app.reranker import rerank_documents
 from app.vector_store import create_vector_store
 from dotenv import load_dotenv
 load_dotenv()
@@ -18,11 +17,6 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, thinking
 def llm_node(state: MessagesState):
     question = state["question"]    
     results = retriever.invoke(question)
-    #documents = rerank_documents(
-    #    question=question,
-    #    documents=results,
-    #   top_k=3,
-    #)
     context = "\n\n".join(d.page_content for d in results)
     llm_response = llm.invoke(f"Context:\n{context}\n\nQuestion: {question}")
     return {"answer": llm_response.content, "documents": results}
