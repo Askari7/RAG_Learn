@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import chat
-from .routes import health
+from api.routes import chat
+from api.routes import health
 
 app = FastAPI(title="P3 API", version="1.0.0")
 app.add_middleware(
