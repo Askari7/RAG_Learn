@@ -12,6 +12,7 @@ wheels/
 venv/
 RAG_EVALUATION_LOG.md
 RAG_EVALUATION_LOG_40Q.md
-checkpoints.db
+checkpoints.db*
 MONITORING_LOG.md
 ragas_results.csv
+data/
