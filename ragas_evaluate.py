@@ -1,6 +1,7 @@
 import json
 import sys
 import types
+import uuid
 
 # ragas 0.4.3 hard-imports ChatVertexAI from a module path that langchain-community
 # removed in 0.4.x (github.com/explodinggradients/ragas/issues/2753). We don't use
@@ -32,8 +33,11 @@ with open("rag_eval_dataset.json", "r", encoding="utf-8") as f:
 
 
 def run_rag(question: str):
+    # Each eval question is independent - use a fresh thread_id per call so the
+    # checkpointer doesn't carry unrelated questions' history into this answer.
+    config = {"configurable": {"thread_id": str(uuid.uuid4())}}
     current_state = {"question": question, "documents": [], "answer": ""}
-    current_state = compiled_graph.invoke(current_state)
+    current_state = compiled_graph.invoke(current_state, config=config)
     return {
         "answer": current_state["answer"],
         "contexts": [d.page_content for d in current_state["documents"]]

@@ -5,6 +5,7 @@ router = APIRouter()
 
 class ChatRequest(BaseModel):
     question: str
+    thread_id: str
 
 class ChatResponse(BaseModel):
     response: str
@@ -17,7 +18,8 @@ def chat(request: ChatRequest)-> ChatResponse:
     """
     try:
         question = request.question
-        response = compiled_graph.invoke({"question": question})
+        config = {"configurable": {"thread_id": request.thread_id}}
+        response = compiled_graph.invoke({"question": question}, config=config)
         return ChatResponse(response=response["answer"])
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
