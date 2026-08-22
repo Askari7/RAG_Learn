@@ -47,7 +47,7 @@ if prompt := st.chat_input("Ask something..."):
 
             try:
                 response = requests.post(
-                    "http://127.0.0.1:8000/chat",
+                    "https://rag-learn-dh29.vercel.app/chat",
                     json={
                         "question": prompt
                     },
