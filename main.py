@@ -5,6 +5,7 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from app.monitoring import TokenCostEstimator
+from app.reranker import rerank
 from app.usage_store import init_usage_table, record_usage
 from app.vector_store import create_vector_store
 from dotenv import load_dotenv
@@ -45,7 +46,7 @@ token_cost_estimator = TokenCostEstimator(input_cost_per_1m=0.30, output_cost_pe
 def llm_node(state: MessagesState):
     question = state["question"]
     history = state.get("messages", [])
-    results = retriever.invoke(question)
+    results = rerank(question, retriever.invoke(question), top_k=3)
     context = "\n\n".join(d.page_content for d in results)
     prompt = history + [HumanMessage(content=f"Context:\n{context}\n\nQuestion: {question}")]
     llm_response = llm.invoke(prompt)

@@ -1,39 +1,67 @@
 import os
+import sqlite3
 import psycopg
+
+DB_URI = os.getenv("DATABASE_URL")
+PLACEHOLDER = "%s" if DB_URI else "?"
 
 
 def _get_connection():
-    return psycopg.connect(os.environ["DATABASE_URL"])
+    if DB_URI:
+        return psycopg.connect(DB_URI)
+    return sqlite3.connect("usage.db")
 
 
 def init_usage_table():
-    with _get_connection() as conn:
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS token_usage (
-                id SERIAL PRIMARY KEY,
-                input_tokens INTEGER NOT NULL,
-                output_tokens INTEGER NOT NULL,
-                cost_usd NUMERIC(12, 6) NOT NULL,
-                created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    conn = _get_connection()
+    try:
+        if DB_URI:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS token_usage (
+                    id SERIAL PRIMARY KEY,
+                    input_tokens INTEGER NOT NULL,
+                    output_tokens INTEGER NOT NULL,
+                    cost_usd NUMERIC(12, 6) NOT NULL,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+                )
+                """
             )
-            """
-        )
+        else:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS token_usage (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    input_tokens INTEGER NOT NULL,
+                    output_tokens INTEGER NOT NULL,
+                    cost_usd REAL NOT NULL,
+                    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def record_usage(input_tokens: int, output_tokens: int, cost_usd: float):
-    with _get_connection() as conn:
+    conn = _get_connection()
+    try:
         conn.execute(
-            """
+            f"""
             INSERT INTO token_usage (input_tokens, output_tokens, cost_usd)
-            VALUES (%s, %s, %s)
+            VALUES ({PLACEHOLDER}, {PLACEHOLDER}, {PLACEHOLDER})
             """,
             (input_tokens, output_tokens, cost_usd),
         )
+        conn.commit()
+    finally:
+        conn.close()
 
 
 def get_usage_totals() -> dict:
-    with _get_connection() as conn:
+    conn = _get_connection()
+    try:
         row = conn.execute(
             """
             SELECT
@@ -43,6 +71,8 @@ def get_usage_totals() -> dict:
             FROM token_usage
             """
         ).fetchone()
+    finally:
+        conn.close()
 
     input_tokens, output_tokens, cost_usd = row
     return {

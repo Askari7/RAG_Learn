@@ -8,6 +8,7 @@ dependencies = [
     "dotenv>=0.9.9",
     "faiss-cpu>=1.15.0",
     "fastapi>=0.141.1",
+    "flashrank>=0.2.10",
     "langchain-community>=0.4.2",
     "langchain-core>=1.5.3",
     "langchain-google-genai>=4.3.3",
