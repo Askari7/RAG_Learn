@@ -3,6 +3,6 @@ from app.loader import loading_documents
 
 def split_documents():
     documents = loading_documents()
-    splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=350, chunk_overlap=100)
     splits = splitter.split_documents(documents)
     return splits

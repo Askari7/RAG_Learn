@@ -238,5 +238,65 @@
     "reference": "Working remotely from outside the country may require additional approval because of tax, visa, and legal considerations, and employees must comply with local labor laws.",
     "policy": "Work From Home Policy",
     "category": "legal"
+  },
+  {
+    "user_input": "What is the purpose of the Laptop Policy?",
+    "reference": "The purpose is to ensure the secure use of company-issued laptops and to protect company data, information, and assets through proper control and monitoring procedures.",
+    "policy": "Laptop Policy",
+    "category": "purpose"
+  },
+  {
+    "user_input": "Can employees take company laptops home without approval?",
+    "reference": "No. Employees are not permitted to take company laptops outside the office premises or to their homes without prior approval.",
+    "policy": "Laptop Policy",
+    "category": "laptop_removal"
+  },
+  {
+    "user_input": "Under what circumstances can a company laptop be taken outside the office?",
+    "reference": "A company laptop may only be taken outside the office for official business requirements or approved Work From Home (WFH) arrangements.",
+    "policy": "Laptop Policy",
+    "category": "laptop_removal"
+  },
+  {
+    "user_input": "Who must an employee get approval from first to take a laptop outside the office?",
+    "reference": "The employee must first obtain approval from the respective Head of Department (HOD).",
+    "policy": "Laptop Policy",
+    "category": "approval"
+  },
+  {
+    "user_input": "Who gives final authorization for a laptop to be taken outside the office?",
+    "reference": "Final authorization shall only be valid upon approval from the GM Administration, after the request is submitted following HOD approval.",
+    "policy": "Laptop Policy",
+    "category": "approval"
+  },
+  {
+    "user_input": "What is issued after the GM Administration approves taking a laptop outside the office?",
+    "reference": "A Gate Pass shall be issued for the laptop.",
+    "policy": "Laptop Policy",
+    "category": "gate_pass"
+  },
+  {
+    "user_input": "What must an employee do with the Gate Pass before leaving the office with a laptop?",
+    "reference": "The employee must sign the Gate Pass and submit the approved Gate Pass to the designated office representative at the time of departure.",
+    "policy": "Laptop Policy",
+    "category": "gate_pass"
+  },
+  {
+    "user_input": "Is there a time limit on how long a laptop can be kept outside the office?",
+    "reference": "Yes. The laptop may only be taken outside the office for the period specified in the approved Gate Pass.",
+    "policy": "Laptop Policy",
+    "category": "gate_pass"
+  },
+  {
+    "user_input": "Are employees allowed to change the administrator username or password on their company laptop?",
+    "reference": "No. Employees are strictly prohibited from changing Administrator Usernames, Passwords, or any system-level settings; all administrative credentials and system access controls remain under the authority of the IT Department.",
+    "policy": "Laptop Policy",
+    "category": "it_security"
+  },
+  {
+    "user_input": "What happens if an employee violates the Laptop Policy?",
+    "reference": "Any violation of this policy may result in disciplinary action in accordance with company rules and procedures, and the company reserves the right to take appropriate action where necessary.",
+    "policy": "Laptop Policy",
+    "category": "compliance"
   }
 ]

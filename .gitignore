@@ -12,6 +12,7 @@ wheels/
 venv/
 RAG_EVALUATION_LOG.md
 RAG_EVALUATION_LOG_40Q.md
+RAG_EVALUATION_LOG_50Q.md
 checkpoints.db*
 usage.db*
 LINKEDIN_POST.md

@@ -30,9 +30,17 @@ else:
 checkpointer.setup()
 
 init_usage_table()
+
+# Corrective RAG: if the grader rejects the retrieved context, rewrite the query
+# and retry retrieval once before giving up and answering with what's available.
+MAX_CORRECTIVE_RETRIES = 1
+
 class MessagesState(TypedDict):
     question: str
+    search_query: str
     documents: List[Document]
+    context_sufficient: bool
+    retry_count: int
     answer: str
     messages: Annotated[List[BaseMessage], add_messages]
 
@@ -43,13 +51,8 @@ llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, thinking
 # gemini-2.5-flash standard (non-batch) text pricing: $0.30 / 1M input tokens, $2.50 / 1M output tokens
 token_cost_estimator = TokenCostEstimator(input_cost_per_1m=0.30, output_cost_per_1m=2.50)
 
-def llm_node(state: MessagesState):
-    question = state["question"]
-    history = state.get("messages", [])
-    results = rerank(question, retriever.invoke(question), top_k=3)
-    context = "\n\n".join(d.page_content for d in results)
-    prompt = history + [HumanMessage(content=f"Context:\n{context}\n\nQuestion: {question}")]
-    llm_response = llm.invoke(prompt)
+
+def _track_usage(llm_response):
     usage = llm_response.usage_metadata
     if usage:
         token_cost_estimator.add_usage(usage["input_tokens"], usage["output_tokens"])
@@ -58,15 +61,73 @@ def llm_node(state: MessagesState):
             + usage["output_tokens"] / 1_000_000 * token_cost_estimator.output_cost_per_1m
         )
         record_usage(usage["input_tokens"], usage["output_tokens"], call_cost)
+
+
+def retrieve_node(state: MessagesState):
+    query = state.get("search_query") or state["question"]
+    results = rerank(query, retriever.invoke(query), top_k=3)
+    return {"documents": results}
+
+
+def grade_node(state: MessagesState):
+    question = state["question"]
+    context = "\n\n".join(d.page_content for d in state["documents"])
+    prompt = (
+        f"Question: {question}\n\nRetrieved context:\n{context}\n\n"
+        "Does this context contain enough information to give a complete, accurate answer "
+        "to the question? Reply with exactly one word: YES or NO."
+    )
+    llm_response = llm.invoke(prompt)
+    _track_usage(llm_response)
+    return {"context_sufficient": llm_response.content.strip().upper().startswith("YES")}
+
+
+def route_after_grade(state: MessagesState):
+    if state["context_sufficient"] or state.get("retry_count", 0) >= MAX_CORRECTIVE_RETRIES:
+        return "generate"
+    return "rewrite"
+
+
+def rewrite_node(state: MessagesState):
+    question = state["question"]
+    context = "\n\n".join(d.page_content for d in state["documents"])
+    prompt = (
+        f"Original question: {question}\n\n"
+        f"This search retrieved context judged insufficient to answer it:\n{context}\n\n"
+        "Rewrite the question as a better, more specific search query to find the missing "
+        "information. Reply with only the rewritten query, no explanation."
+    )
+    llm_response = llm.invoke(prompt)
+    _track_usage(llm_response)
+    return {
+        "search_query": llm_response.content.strip(),
+        "retry_count": state.get("retry_count", 0) + 1,
+    }
+
+
+def generate_node(state: MessagesState):
+    question = state["question"]
+    history = state.get("messages", [])
+    context = "\n\n".join(d.page_content for d in state["documents"])
+    prompt = history + [HumanMessage(content=f"Context:\n{context}\n\nQuestion: {question}")]
+    llm_response = llm.invoke(prompt)
+    _track_usage(llm_response)
     return {
         "answer": llm_response.content,
-        "documents": results,
         "messages": [HumanMessage(content=question), AIMessage(content=llm_response.content)],
     }
 
+
 graph = StateGraph(MessagesState)
-graph.add_node("llm_node", llm_node)
-graph.add_edge(START, "llm_node")
-graph.add_edge("llm_node", END)
+graph.add_node("retrieve", retrieve_node)
+graph.add_node("grade", grade_node)
+graph.add_node("rewrite", rewrite_node)
+graph.add_node("generate", generate_node)
+
+graph.add_edge(START, "retrieve")
+graph.add_edge("retrieve", "grade")
+graph.add_conditional_edges("grade", route_after_grade, {"generate": "generate", "rewrite": "rewrite"})
+graph.add_edge("rewrite", "retrieve")
+graph.add_edge("generate", END)
 
 compiled_graph = graph.compile(checkpointer=checkpointer)
