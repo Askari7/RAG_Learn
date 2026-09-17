@@ -1,6 +1,6 @@
 # P3 — HR Policy RAG Assistant
 
-A Retrieval-Augmented Generation assistant that answers questions about a company's HR policy PDFs, with multi-turn conversation memory, hybrid (keyword + semantic) retrieval with reranking, corrective retrieval, and token-cost monitoring. Backend is FastAPI on Vercel; frontend is Streamlit; LLM is Google Gemini.
+A Retrieval-Augmented Generation assistant that answers questions about a company's HR policy PDFs, with multi-turn conversation memory, hybrid (keyword + semantic) retrieval with reranking, corrective retrieval, and token-cost monitoring. Backend is FastAPI on Vercel; frontend is a Next.js app (`web/`) — an earlier Streamlit frontend (`front/streamlit.py`) is still present but no longer the primary one; LLM is Google Gemini.
 
 ## How it works
 
@@ -28,7 +28,7 @@ The pipeline is no longer a straight line — `main.py`'s LangGraph makes a deci
 | Embedding model | `gemini-embedding-2-preview` |
 | LLM | `gemini-2.5-flash`, `temperature=0.2`, `thinking_budget=0` |
 | Conversation memory | LangGraph checkpointer, keyed by `thread_id` (SQLite dev / Postgres prod) |
-| Deployment | FastAPI on Vercel (`api/server.py`) + Streamlit frontend (`front/streamlit.py`) |
+| Deployment | FastAPI on Vercel (`api/server.py`) + Next.js frontend (`web/`), each its own Vercel project |
 
 **Measured quality — 50-question eval set, current config** (`ragas`; structure-aware loader + `chunk_size=350`, `chunk_overlap=100`): **faithfulness 0.952, answer relevancy 0.985, context recall 0.970, context precision 0.885.** All four metrics land within noise of the prior config (Run 2 below) — expected, since `app/loader.py`'s header/page-break fix only touches a handful of the 99 chunks, not enough to move a 50-question aggregate mean even when it fixes real, previously-broken questions. The evidence that matters is direct: the exact benchmark question "How many sick leave days are employees entitled to?" now scores precision/recall/faithfulness all ~1.0 with the correct "8 days" answer (previously the source of the "12/14 days" hallucinations), and a Laptop Policy Gate Pass sentence that used to be truncated at an old page break is now intact. See `RAG_EVALUATION_LOG_50Q.md` Run 5 for the full write-up, including a fourth, deeper PDF-extraction-order defect found (but not fixed) along the way.
 
@@ -87,8 +87,9 @@ P3/
 │       ├── chat.py               # POST /chat  {question, thread_id} -> {response}
 │       ├── health.py             # GET /health
 │       └── usage.py              # GET /usage  -> cumulative token usage & cost
+├── web/                        # Next.js chat frontend (primary) — see web/README.md
 ├── front/
-│   └── streamlit.py            # Chat UI, calls the deployed API
+│   └── streamlit.py            # Earlier chat UI, calls the deployed API — kept, no longer primary
 ├── data/                       # Source HR policy PDFs
 ├── vector_store/               # Cached FAISS index (index.faiss / index.pkl)
 ├── vercel.json                 # Vercel build config (api/server.py via @vercel/python)
@@ -131,23 +132,31 @@ LANGSMITH_PROJECT=your-project-name
 # API
 uv run uvicorn api.server:app --reload
 
-# Frontend (in a separate terminal)
-uv run streamlit run front/streamlit.py
+# Frontend (in a separate terminal) — see web/README.md for full setup
+cd web && npm install && npm run dev
 ```
 
-The Streamlit app generates a `thread_id` per browser session and sends it with every request, so follow-up questions in the same session share conversation context.
+The frontend generates a `thread_id` per browser session (kept in the URL) and sends it with every request, so follow-up questions in the same session share conversation context.
+
+The earlier Streamlit app (`front/streamlit.py`) still works the same way via `uv run streamlit run front/streamlit.py`, but isn't the primary frontend anymore.
 
 ## API endpoints
 
 | Endpoint | Method | Body / Notes |
 |---|---|---|
 | `/chat` | POST | `{"question": str, "thread_id": str}` → `{"response": str}` |
+| `/threads` | GET | `?limit=` (default 50) → `{"threads": [{"thread_id", "preview"}]}`, most recently active first |
+| `/threads/{thread_id}/messages` | GET | `{"messages": [{"role": "user" \| "assistant", "content"}]}` — full saved history for a thread |
 | `/health` | GET | Liveness check |
 | `/usage` | GET | `{"input_tokens", "output_tokens", "total_tokens", "estimated_cost_usd"}`, cumulative across all requests via Postgres |
 
+**Known issue (2026-09-17):** `/threads/{thread_id}/messages` returns HTTP 500 on the deployed production API for *every* thread_id, including ones that have never existed — confirmed reproducible against the live Postgres/Neon-backed deployment, and confirmed **not** reproducible locally against the SQLite checkpointer (`{"messages": []}`, 200, as expected for an unknown thread). This points at something specific to the deployed Postgres path (stale deployment, a Neon connection issue, or a `PostgresSaver.get_state()` behavior difference), not a general code bug — worth checking Vercel's function logs for the actual exception before digging further. Both the Streamlit app and the new Next.js frontend's history-restore/thread-switch features are affected until this is fixed.
+
 ## Deployment (Vercel)
 
-`vercel.json` builds `api/server.py` as a single `@vercel/python` function. Set these in the Vercel project's environment variables:
+The API and the Next.js frontend are **two separate Vercel projects** against the same git repo — see `web/README.md` for the frontend's deployment steps (Root Directory = `web`, `NEXT_PUBLIC_API_BASE_URL` env var).
+
+`vercel.json` builds `api/server.py` as a single `@vercel/python` function. Set these in the API's Vercel project's environment variables:
 
 - `GEMINI_API_KEY`
 - `DATABASE_URL` — auto-populated if you attach Neon as storage via Vercel's integration (uses the pooled connection string, which is what this project expects)

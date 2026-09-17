@@ -1,0 +1,50 @@
+.row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.rowUser {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-width: 75%;
+  padding: 0.65rem 0.95rem;
+  border-radius: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.bubble :global(p) {
+  margin: 0 0 0.5rem;
+}
+
+.bubble :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+.bubble :global(ul),
+.bubble :global(ol) {
+  margin: 0 0 0.5rem 1.1rem;
+  padding: 0;
+}
+
+.bubble :global(code) {
+  background: var(--code-bg);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.3rem;
+  font-size: 0.85em;
+}
+
+.bubbleUser {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-bottom-right-radius: 0.25rem;
+}
+
+.bubbleAssistant {
+  background: var(--surface);
+  color: var(--foreground);
+  border-bottom-left-radius: 0.25rem;
+}
