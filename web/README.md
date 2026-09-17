@@ -37,5 +37,13 @@ relationship the Streamlit app had to it):
    URL. Because it's `NEXT_PUBLIC_`-prefixed, it's inlined at build time — changing
    it later requires a redeploy, not just an env var update.
 
-No `vercel.json` is needed here; Vercel's Next.js framework preset handles the
-build automatically once Root Directory is set.
+`web/vercel.json` pins `"framework": "nextjs"` explicitly. This turned out to be
+necessary, not optional: the repo's root-level `vercel.json` (for the Python API,
+written in the older `builds`/`routes` format) can confuse Vercel's framework
+auto-detection for this project even with Root Directory set to `web`, causing a
+build that fails at the very last step with `Error: No Output Directory named
+"public" found` — the build itself succeeds (you'll see `next build` compile
+fine in the log), but Vercel falls back to treating the output as a plain static
+site instead of using its Next.js runtime. If this happens despite the
+`vercel.json` here, double-check in the dashboard that Settings → General →
+**Framework Preset** is explicitly "Next.js" for this project (not "Other").
