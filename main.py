@@ -4,11 +4,14 @@ from langchain_core.documents  import Document
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
+from app.metadata_filter import infer_source
 from app.monitoring import TokenCostEstimator
 from app.reranker import rerank
+from app.telemetry import get_tracer
 from app.usage_store import init_usage_table, record_usage
 from app.vector_store import create_vector_store
 from dotenv import load_dotenv
+from langchain_classic.retrievers import EnsembleRetriever
 import os
 import sqlite3
 import psycopg
@@ -44,12 +47,14 @@ class MessagesState(TypedDict):
     answer: str
     messages: Annotated[List[BaseMessage], add_messages]
 
-vector_store, retriever = create_vector_store()
+vector_store, retriever, bm25_by_source = create_vector_store()
 
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2, thinking_budget=0)
 
 # gemini-2.5-flash standard (non-batch) text pricing: $0.30 / 1M input tokens, $2.50 / 1M output tokens
 token_cost_estimator = TokenCostEstimator(input_cost_per_1m=0.30, output_cost_per_1m=2.50)
+
+tracer = get_tracer()
 
 
 def _track_usage(llm_response):
@@ -63,23 +68,49 @@ def _track_usage(llm_response):
         record_usage(usage["input_tokens"], usage["output_tokens"], call_cost)
 
 
+def _retriever_for(query: str):
+    # Only narrow the candidate pool when the query confidently matches one
+    # policy and no others; otherwise fall back to the full, unfiltered
+    # retriever (see app/metadata_filter.py for why).
+    source = infer_source(query)
+    if source is None or source not in bm25_by_source:
+        return retriever
+
+    scoped_dense = vector_store.as_retriever(
+        search_type="similarity",
+        search_kwargs={"k": 3, "filter": {"source": source}},
+    )
+    return EnsembleRetriever(
+        retrievers=[bm25_by_source[source], scoped_dense],
+        weights=[0.5, 0.5],
+    )
+
+
 def retrieve_node(state: MessagesState):
-    query = state.get("search_query") or state["question"]
-    results = rerank(query, retriever.invoke(query), top_k=3)
-    return {"documents": results}
+    with tracer.start_as_current_span("retrieve") as span:
+        query = state.get("search_query") or state["question"]
+        source = infer_source(query)
+        results = rerank(query, _retriever_for(query).invoke(query), top_k=3)
+        span.set_attribute("search_query", query)
+        span.set_attribute("documents.count", len(results))
+        span.set_attribute("metadata_filter.source", source or "none")
+        return {"documents": results}
 
 
 def grade_node(state: MessagesState):
-    question = state["question"]
-    context = "\n\n".join(d.page_content for d in state["documents"])
-    prompt = (
-        f"Question: {question}\n\nRetrieved context:\n{context}\n\n"
-        "Does this context contain enough information to give a complete, accurate answer "
-        "to the question? Reply with exactly one word: YES or NO."
-    )
-    llm_response = llm.invoke(prompt)
-    _track_usage(llm_response)
-    return {"context_sufficient": llm_response.content.strip().upper().startswith("YES")}
+    with tracer.start_as_current_span("grade") as span:
+        question = state["question"]
+        context = "\n\n".join(d.page_content for d in state["documents"])
+        prompt = (
+            f"Question: {question}\n\nRetrieved context:\n{context}\n\n"
+            "Does this context contain enough information to give a complete, accurate answer "
+            "to the question? Reply with exactly one word: YES or NO."
+        )
+        llm_response = llm.invoke(prompt)
+        _track_usage(llm_response)
+        context_sufficient = llm_response.content.strip().upper().startswith("YES")
+        span.set_attribute("context_sufficient", context_sufficient)
+        return {"context_sufficient": context_sufficient}
 
 
 def route_after_grade(state: MessagesState):
@@ -89,33 +120,41 @@ def route_after_grade(state: MessagesState):
 
 
 def rewrite_node(state: MessagesState):
-    question = state["question"]
-    context = "\n\n".join(d.page_content for d in state["documents"])
-    prompt = (
-        f"Original question: {question}\n\n"
-        f"This search retrieved context judged insufficient to answer it:\n{context}\n\n"
-        "Rewrite the question as a better, more specific search query to find the missing "
-        "information. Reply with only the rewritten query, no explanation."
-    )
-    llm_response = llm.invoke(prompt)
-    _track_usage(llm_response)
-    return {
-        "search_query": llm_response.content.strip(),
-        "retry_count": state.get("retry_count", 0) + 1,
-    }
+    with tracer.start_as_current_span("rewrite") as span:
+        question = state["question"]
+        context = "\n\n".join(d.page_content for d in state["documents"])
+        prompt = (
+            f"Original question: {question}\n\n"
+            f"This search retrieved context judged insufficient to answer it:\n{context}\n\n"
+            "Rewrite the question as a better, more specific search query to find the missing "
+            "information. Reply with only the rewritten query, no explanation."
+        )
+        llm_response = llm.invoke(prompt)
+        _track_usage(llm_response)
+        retry_count = state.get("retry_count", 0) + 1
+        span.set_attribute("retry_count", retry_count)
+        return {
+            "search_query": llm_response.content.strip(),
+            "retry_count": retry_count,
+        }
 
 
 def generate_node(state: MessagesState):
-    question = state["question"]
-    history = state.get("messages", [])
-    context = "\n\n".join(d.page_content for d in state["documents"])
-    prompt = history + [HumanMessage(content=f"Context:\n{context}\n\nQuestion: {question}")]
-    llm_response = llm.invoke(prompt)
-    _track_usage(llm_response)
-    return {
-        "answer": llm_response.content,
-        "messages": [HumanMessage(content=question), AIMessage(content=llm_response.content)],
-    }
+    with tracer.start_as_current_span("generate") as span:
+        question = state["question"]
+        history = state.get("messages", [])
+        context = "\n\n".join(d.page_content for d in state["documents"])
+        prompt = history + [HumanMessage(content=f"Context:\n{context}\n\nQuestion: {question}")]
+        llm_response = llm.invoke(prompt)
+        _track_usage(llm_response)
+        usage = llm_response.usage_metadata
+        if usage:
+            span.set_attribute("llm.input_tokens", usage["input_tokens"])
+            span.set_attribute("llm.output_tokens", usage["output_tokens"])
+        return {
+            "answer": llm_response.content,
+            "messages": [HumanMessage(content=question), AIMessage(content=llm_response.content)],
+        }
 
 
 graph = StateGraph(MessagesState)

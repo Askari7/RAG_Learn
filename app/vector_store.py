@@ -1,4 +1,5 @@
 from app.splitter import split_documents
+from collections import defaultdict
 import os
 import pickle
 from langchain_classic.retrievers import EnsembleRetriever
@@ -64,4 +65,18 @@ def create_vector_store():
         weights=[0.5, 0.5],
     )
 
-    return vector_store, retriever
+    # Per-source BM25 retrievers, built from the already-loaded bm25_retriever's
+    # docs (no re-read of data/ needed). Used for metadata-filtered retrieval
+    # (app/metadata_filter.py) to shrink the candidate pool to one policy's
+    # chunks when a query confidently matches it.
+    docs_by_source = defaultdict(list)
+    for doc in bm25_retriever.docs:
+        docs_by_source[doc.metadata.get("source")].append(doc)
+
+    bm25_by_source = {}
+    for source, docs in docs_by_source.items():
+        scoped_bm25 = BM25Retriever.from_documents(docs)
+        scoped_bm25.k = 3
+        bm25_by_source[source] = scoped_bm25
+
+    return vector_store, retriever, bm25_by_source

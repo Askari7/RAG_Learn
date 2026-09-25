@@ -152,6 +152,24 @@ The earlier Streamlit app (`front/streamlit.py`) still works the same way via `u
 
 **Known issue (2026-09-17):** `/threads/{thread_id}/messages` returns HTTP 500 on the deployed production API for *every* thread_id, including ones that have never existed — confirmed reproducible against the live Postgres/Neon-backed deployment, and confirmed **not** reproducible locally against the SQLite checkpointer (`{"messages": []}`, 200, as expected for an unknown thread). This points at something specific to the deployed Postgres path (stale deployment, a Neon connection issue, or a `PostgresSaver.get_state()` behavior difference), not a general code bug — worth checking Vercel's function logs for the actual exception before digging further. Both the Streamlit app and the new Next.js frontend's history-restore/thread-switch features are affected until this is fixed.
 
+## Observability (OpenTelemetry, local)
+
+LangSmith (env vars above) traces what happens *inside* the LangGraph run. OpenTelemetry gives a vendor-neutral trace across the whole request — HTTP handling, each LangGraph node, and Postgres — viewed locally with [Jaeger](https://www.jaegertracing.io/) via Docker:
+
+```bash
+docker run -d --name jaeger -p 16686:16686 -p 4318:4318 jaegertracing/all-in-one:latest
+```
+
+Add to `.env`:
+
+```
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+```
+
+Run the API as usual (`uv run uvicorn api.server:app --reload`), send it a few `/chat` requests, then open [http://localhost:16686](http://localhost:16686) and pick the `p3-hr-rag-api` service. A trace shows the `POST /chat` request (via `opentelemetry-instrumentation-fastapi` — free, zero-code auto-instrumentation) with nested `retrieve` / `grade` / `rewrite` / `generate` spans (hand-written in `main.py` around each LangGraph node, since auto-instrumentation has no idea those exist) carrying custom attributes like `documents.count`, `metadata_filter.source`, `context_sufficient`, `retry_count`, and `llm.input_tokens`/`llm.output_tokens`. If `DATABASE_URL` is set (Postgres, not the local SQLite fallback), `opentelemetry-instrumentation-psycopg` adds the checkpointer's DB round-trips as their own spans too.
+
+This is entirely opt-in and local-only: `app/telemetry.py` no-ops before importing anything from `opentelemetry.*` if `OTEL_EXPORTER_OTLP_ENDPOINT` isn't set, and the OTel packages live in `pyproject.toml`'s `dev` group (not installed on Vercel at all). Production/Vercel tracing — which needs a hosted OTLP endpoint and flushing spans before the serverless function freezes — is a possible future addition, not implemented here.
+
 ## Deployment (Vercel)
 
 The API and the Next.js frontend are **two separate Vercel projects** against the same git repo — see `web/README.md` for the frontend's deployment steps (Root Directory = `web`, `NEXT_PUBLIC_API_BASE_URL` env var).

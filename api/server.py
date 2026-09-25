@@ -5,8 +5,10 @@ from api.routes import chat
 from api.routes import health
 from api.routes import threads
 from api.routes import usage
+from app.telemetry import setup_telemetry
 
 app = FastAPI(title="P3 API", version="1.0.0")
+setup_telemetry(app)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

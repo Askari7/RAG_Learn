@@ -1,0 +1,121 @@
+user_input,response,abstained
+What is the company's dress code policy?,"Based on the provided text, **there is no information about the company's dress code policy.**
+
+The excerpts discuss:
+*   Remote work policy (for Professional Staff)
+*   Attendance policy (for Professional Staff & Labor Staff)
+*   Leave policy (for employees)
+
+None of these documents mention anything about a dress code.",True
+Does the company provide health insurance or medical benefits coverage?,"Based on the provided text, there is **no information** about the company providing health insurance or medical benefits coverage.
+
+The text mentions ""sick leave"" and the requirement for a ""medical certificate"" for certain sick leaves, but it doesn't state that the company covers the costs of medical treatment or provides health insurance.",True
+What is the notice period required for resignation?,"Based on the provided text, there is **no information about a notice period required for resignation.**
+
+The text discusses:
+* How leave is calculated and deducted upon resignation or termination.
+* Specific types of leaves (wedding, accidental/hospitalization) during probation.
+* The consequence of not submitting leaves on time (LWOP).
+* Annual leave planning.
+* The company's right to revise the policy.
+
+It does not mention any specific duration for a resignation notice period.",True
+How are annual performance appraisals conducted?,"Based on the provided text, there is **no information** about how annual performance appraisals are conducted.
+
+The text only covers:
+*   Expectations for remote work performance and availability.
+*   Rules regarding annual leave entitlement and planning.",True
+What is the salary structure or pay grade system at the company?,"Based on the provided text, there is **no information** about the salary structure or pay grade system at the company.
+
+The text focuses solely on leave policies, eligibility, and guidelines for casual and annual leave.",True
+Does the company offer a provident fund or retirement savings plan?,"Based on the provided text, there is **no information** about the company offering a provident fund or retirement savings plan.
+
+The text focuses on:
+* Annual leave entitlement and planning
+* Official Duty/Work From Home procedures and limits
+* Leave calculation upon resignation/termination",True
+What is the policy on parking allocation for employees?,"Based on the provided text, there is **no information** about a policy on parking allocation for employees.
+
+The text discusses:
+*   Remote work guidelines for professional staff.
+*   An attendance policy for all employees.
+*   A leave policy for regular employees.
+
+Parking is not mentioned in any of these contexts.",True
+Are there guidelines for social media use outside of work?,"Based on the provided text, there are **no guidelines for social media use outside of work**.
+
+The policy focuses on remote work arrangements, eligibility, and the use of company equipment (laptops). It does not mention anything about employee conduct on social media.",False
+What is the company's harassment and grievance redressal policy?,"Based on the provided text, there is **no information about the company's harassment and grievance redressal policy.**
+
+The text discusses:
+*   **Policy Compliance:** Emphasizing that employees must comply with policies and that violations may lead to disciplinary action.
+*   **Company's Rights:** The company reserves the right to take various actions (though the sentence is cut off, it seems to relate to leave types).
+*   **Leave Policy:** Eligibility and general guidelines for leave.
+*   **Revision of Policy:** The company's right to revise policies.
+
+None of these sections touch upon harassment, grievance procedures, or how employees can report such issues.",True
+How does the company handle expense reimbursement for business travel?,"Based on the provided text, there is **no information** about how the company handles expense reimbursement for business travel.
+
+The text discusses:
+* A policy on remote work (for professional staff).
+* A leave policy (for all regular employees).
+* General statements about collaboration, legal compliance, and the company's right to revise policies.
+
+Expense reimbursement for business travel is not mentioned in any of the provided excerpts.",True
+What is the probation period for new employees?,"The provided text does not explicitly state the length of the probation period for new employees. It only mentions policies that apply ""during probationary period"" or ""upon the completion of probation.""",False
+Does the company have an employee referral bonus program?,"Based on the provided text, there is **no information** about an employee referral bonus program.
+
+The text focuses on guidelines for remote work, attendance, and leave policies for professional staff.",True
+Is there a company holiday calendar listing public holidays?,"Based on the provided text, there is no explicit mention of a ""company holiday calendar"" or a list of ""public holidays.""
+
+The text only states:
+* ""days (excluding national holidays) for each pregnancy.""
+* ""Weekends and any holiday lying between the sanctioned leave periods will be excluded.""
+
+While these statements acknowledge the existence of ""national holidays"" and ""any holiday,"" they do not indicate that the company itself provides a calendar or list of these holidays. It implies that employees are expected to be aware of what constitutes a ""national holiday"" or ""any holiday"" that might fall within their leave period.",False
+What training and development programs does the company offer?,"Based on the provided text, there is **no information** about the training and development programs the company offers.
+
+The text focuses on:
+*   **Performance and Availability expectations** for remote employees.
+*   **IT Department cooperation requirements**.
+*   The **objective and purpose of the Attendance Policy**.
+
+None of these sections mention any training or development initiatives.",True
+Does the company have an anti-bribery or vendor code of conduct policy?,"Based on the provided text, there is **no explicit mention** of an anti-bribery or vendor code of conduct policy.
+
+The document focuses on:
+*   Employee Conduct & Compliance Policy (specifically secure use of company-issued laptops and data protection).
+*   General statements about disciplinary action for ""any act of divulgence.""
+*   Annual leave plans.
+*   The company's right to revise policies.
+
+While ""EMPLOYEE CONDUCT & COMPLIANCE POLICY"" is a broad title, the excerpt provided only details aspects related to laptops and data. It does not contain any clauses or sections that directly address bribery, corruption, or the conduct expected from vendors or third parties.",True
+What is the policy on overtime pay?,"Based on the provided text, there is **no information about the policy on overtime pay.**
+
+The text discusses:
+*   Standard working hours for different days and departments.
+*   Exemption for technicians regarding flexible hours.
+*   Annual leave policy in critical circumstances.
+*   Maternity leave policy.
+
+Overtime pay is not mentioned or detailed anywhere in the given context.",True
+Are employees eligible for stock options or equity grants?,"Based on the provided text, there is **no information** about employees being eligible for stock options or equity grants.
+
+The policy only outlines guidelines for remote work (Work From Anywhere - WFA) and leave eligibility. It does not mention any compensation or benefits related to stock or equity.",True
+What is the process for requesting a salary advance?,The provided text does not contain any information about the process for requesting a salary advance. It only discusses policies related to Work From Home (WFH) days and a general leave approval process.,True
+Does the company provide gym membership or wellness benefits?,"Based on the provided text, there is **no information** about the company providing gym memberships or wellness benefits.
+
+The text focuses on:
+*   Compliance with labor laws
+*   Health and safety in remote work environments (and company liability)
+*   Performance and availability expectations for remote workers
+*   Termination of Work From Anywhere (WFA) privileges",True
+What is the exit interview process when an employee resigns?,"Based on the provided text, there is **no information about an exit interview process** when an employee resigns.
+
+The text focuses on:
+*   How leave is calculated and deducted upon resignation or termination.
+*   The approval workflow for leave requests (employee -> manager -> HR -> employee).
+*   How leave balances are updated.
+*   The treatment of absence during a probationary period.
+
+It does not mention any steps related to an exit interview.",True
